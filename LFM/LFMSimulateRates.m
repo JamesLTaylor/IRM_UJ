@@ -1,11 +1,14 @@
 %
-% Assumes measure date is T(kStart-1)
+% Simulates forward rates under a Lognormal forward rate model. Assumes 
+% measure date is T(kStart-1) so all required rates are after the measure
+% date.
 % 
 % LFMSimulateRates(kStart, kEnd, initialF, T,...
 %                    corrMatrix, volFunc,... 
 %                    N, deltaT)
 %
-% kStart, kEnd
+% kStart, kEnd  - the indices in T of the first and last required rates.
+%                 To save time not all rates are simulated.
 % initialF      - row vector of forward rates
 % T             - row vector of tenor structure starting at T_1.  Assumes
 %                 T_0 = 0
@@ -33,7 +36,7 @@ while t<=T(kStart-1)
             drift = drift + newDriftTerm;
         end
         drift = drift * sigmaK;
-        logF(:,k) = oldF(:,k) + drift * deltaT - 0.5*sigmaK^2*deltaT + sigmaK*sqrt(deltaT)*Z(k-kStart+1);    
+        logF(:,k) = logF(:,k) + drift * deltaT - 0.5*sigmaK^2*deltaT + sigmaK*sqrt(deltaT)*Z(:, k-kStart+1);    
     end
     oldF = exp(logF);
     t = t + deltaT;
