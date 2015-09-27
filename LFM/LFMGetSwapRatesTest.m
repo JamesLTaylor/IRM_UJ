@@ -21,10 +21,13 @@ rho_infinity = 0.6;
 eta = 0.5;
 corrMatrix = CorrFunction2Param(i, j, M, rho_infinity, eta);
 %Details of simulation
-N = 1000;
+N = 100000;
 deltaT = 0.1;
 % Get the simulated rates
-rates = LFMSimulateRates(kStart, kEnd, initialF, T,...
+F = LFMSimulateRates(kStart, kEnd, initialF, T,...
                     corrMatrix, volFunc,... 
                     N, deltaT);
-             
+
+[swapRates, pvbps] = LFMGetSwapRates(alpha, beta, T, F);
+
+hist(swapRates, 100);
