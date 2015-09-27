@@ -1,0 +1,41 @@
+%
+% Assumes measure date is T(kStart-1)
+% 
+% LFMSimulateRates(kStart, kEnd, initialF, T,...
+%                    corrMatrix, volFunc,... 
+%                    N, deltaT)
+%
+% kStart, kEnd
+% initialF      - row vector of forward rates
+% T             - row vector of tenor structure starting at T_1.  Assumes
+%                 T_0 = 0
+function rates = LFMSimulateRates(kStart, kEnd, initialF, T,...
+                    corrMatrix, volFunc,... 
+                    N, deltaT)
+              
+subMat = corrMatrix(kStart:kEnd, kStart:kEnd);
+C = chol(subMat);
+oldF = repmat(initialF,N,1);
+logF = log(oldF);
+tau = diff([0 T]);
+t = 0;
+
+while t<=T(kStart-1)    
+    indIncrement = randn(N,(kEnd-kStart)+1);
+    Z = indIncrement*C;
+    for k = kStart:kEnd    
+        sigmaK = volFunc(t, k);
+
+        drift = 0;
+        for j = kStart:k
+            newDriftTerm = corrMatrix(k, j)*tau(j)*volFunc(t, j)*oldF(:,j);
+            newDriftTerm = newDriftTerm ./ (1+tau(j) * oldF(:,j));
+            drift = drift + newDriftTerm;
+        end
+        drift = drift * sigmaK;
+        logF(:,k) = oldF(:,k) + drift * deltaT - 0.5*sigmaK^2*deltaT + sigmaK*sqrt(deltaT)*Z(k-kStart+1);    
+    end
+    oldF = exp(logF);
+    t = t + deltaT;
+end
+rates = oldF;
