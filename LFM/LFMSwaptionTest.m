@@ -21,7 +21,7 @@ rho_infinity = 0.6;
 eta = 0.5;
 corrMatrix = CorrFunction2Param(i, j, M, rho_infinity, eta);
 %Details of simulation
-N = 100000;
+N = 1000000;
 deltaT = 0.1;
 % Get the simulated rates
 rates = LFMSimulateRates(kStart, kEnd, initialF, T,...
@@ -39,6 +39,7 @@ forwardSwapRate = (dfs(alpha) - dfs(beta))/pvbp;
 vol = 0.1317;
 valueBlack = Black(forwardSwapRate, K, vol, T(alpha), notional*pvbp, 1);
 
+figure()
 plot(K,value,'k', K, valueBlack, 'b')
 legend('LFM Monte Carlo','Indicative Black')
 
@@ -47,8 +48,9 @@ for i = 1:length(K)
    modelImpliedVol(i) = BlackImpliedVol(forwardSwapRate, K(i), ...
        T(alpha), notional*pvbp, 1, value(i)); 
 end
+figure()
 plot(K,modelImpliedVol)
-axis([0.04 0.1 0.12 0.14])
+axis([K(1) K(end) 0.12 0.14])
 grid on
 xlabel('strike');
 ylabel('model implied volatility')
