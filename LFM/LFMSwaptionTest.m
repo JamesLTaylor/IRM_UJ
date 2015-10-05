@@ -41,3 +41,15 @@ valueBlack = Black(forwardSwapRate, K, vol, T(alpha), notional*pvbp, 1);
 
 plot(K,value,'k', K, valueBlack, 'b')
 legend('LFM Monte Carlo','Indicative Black')
+
+modelImpliedVol = zeros(size(value));
+for i = 1:length(K)
+   modelImpliedVol(i) = BlackImpliedVol(forwardSwapRate, K(i), ...
+       T(alpha), notional*pvbp, 1, value(i)); 
+end
+plot(K,modelImpliedVol)
+axis([0.04 0.1 0.12 0.14])
+grid on
+xlabel('strike');
+ylabel('model implied volatility')
+title('LFM Swaption implied vols, T_{\alpha}=2, T_{\beta}=4')
