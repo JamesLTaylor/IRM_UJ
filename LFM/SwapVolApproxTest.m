@@ -17,7 +17,7 @@ rho_infinity = 0.6;
 eta = 0.2;
 corrMatrix = CorrFunction2Param(i, j, M, rho_infinity, eta);
 %Details of simulation
-N = 1000000;
+N = 100000;
 deltaT = 0.1;
 
 K = 0.07;
