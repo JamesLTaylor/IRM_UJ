@@ -36,7 +36,8 @@ while t<=T(kStart-1)
             drift = drift + newDriftTerm;
         end
         drift = drift * sigmaK;
-        logF(:,k) = logF(:,k) + drift * deltaT - 0.5*sigmaK^2*deltaT + sigmaK*sqrt(deltaT)*Z(:, k-kStart+1);    
+        logF(:,k) = logF(:,k) + drift * deltaT - 0.5*sigmaK^2*deltaT + ...
+            sigmaK*sqrt(deltaT)*Z(:, k-kStart+1);    
     end
     oldF = exp(logF);
     t = t + deltaT;
